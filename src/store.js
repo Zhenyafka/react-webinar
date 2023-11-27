@@ -4,6 +4,7 @@
 class Store {
   constructor(initState = {}) {
     this.state = initState;
+    this.state.usedCodes = this.state.list.map(item => item.code);
     this.listeners = []; // Слушатели изменений состояния
   }
 
@@ -42,12 +43,15 @@ class Store {
    * Добавление новой записи
    */
   addItem() {
+    let newCode = this.state.usedCodes.length + 1;
+    while (this.state.usedCodes.includes(newCode)) {
+      newCode++;
+    }
     this.setState({
       ...this.state,
-      list: [...this.state.list, {
-        code: (Math.pow(this.state.list.length, 3) / 8).toFixed(),
-        title: "Новая запись",  selectedCount: 0},]
-    })
+      list: [...this.state.list, { code: newCode, title: 'Новая запись' }]
+    });
+    this.state.usedCodes.push(newCode);
   };
 
   /**
@@ -81,6 +85,7 @@ class Store {
       })
     })
   }
+
 }
 
 export default Store;

@@ -10,6 +10,15 @@ import './styles.css';
 function App({store}) {
 
     const list = store.getState().list;
+    const endWith = (count) => {
+        const lastNum = parseInt(count.toString().slice(-1));
+        let word;
+        if (!(Number.isInteger(count))) return "";
+        else if (lastNum === 2 || lastNum ===3 || lastNum === 4) word = 'раза';
+        else word = 'раз';
+        return `Выделяли ${count} ${word}`;
+
+    }
     return (
         <div className='App'>
             <div className='App-head'>
@@ -26,8 +35,7 @@ function App({store}) {
                                 className={"Item" + (item.selected ? " Item_selected" : "")}
                                 onClick={() => store.selectItem(item.code)}>
                                 <div className="Item-code">{item.code}</div>
-                                <div className="Item-title">{item.title}</div>
-                                <div className='Item-title'>{item.title}{!!item.selectedCount && ` | Выделяли ${item.selectedCount} раз`}</div>
+                                <div className="Item-title">{item.title} {item.selectedCount > 0? endWith(item.selectedCount) : "" }</div>
                                 <div className="Item-actions">
                                     <button onClick={() => store.deleteItem(item.code)}>
                                         Удалить
