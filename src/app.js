@@ -3,6 +3,9 @@ import List from "./components/list";
 import Controls from "./components/controls";
 import Head from "./components/head";
 import PageLayout from "./components/page-layout";
+import Basket from "./components/basket";
+import BasketInfo from "./components/basket-info";
+import BasketBlock from "./components/basket-block";
 
 /**
  * Приложение
@@ -12,28 +15,48 @@ import PageLayout from "./components/page-layout";
 function App({store}) {
 
   const list = store.getState().list;
-
+  const basketList = store.getState().basketList;
+  const totalPrice = store.getState().totalPrice;
+  const itemCount = store.getState().countCart;
+  const activeModal = store.getState().activeModal;
   const callbacks = {
-    onDeleteItem: useCallback((code) => {
-      store.deleteItem(code);
+    onAddItemCart: useCallback(
+      (code, title, price) => {
+        store.onAddItem(code, title, price);
+      },
+      [store, store.getState().basketList]
+    ),
+    onClickOpenBasket: useCallback(() => {
+      store.clickOpenBasket();
     }, [store]),
+    deleteBasketItem: useCallback(
+      (code) => {
+        store.onDeleteItem(code);
+      },
+      [store]
+    ),
+  };
 
-    onSelectItem: useCallback((code) => {
-      store.selectItem(code);
-    }, [store]),
-
-    onAddItem: useCallback(() => {
-      store.addItem();
-    }, [store])
-  }
 
   return (
     <PageLayout>
-      <Head title='Приложение на чистом JS'/>
-      <Controls onAdd={callbacks.onAddItem}/>
-      <List list={list}
-            onDeleteItem={callbacks.onDeleteItem}
-            onSelectItem={callbacks.onSelectItem}/>
+      <Head title="Магазин" />
+      <BasketInfo
+        cartList={basketList}
+        basketIsOpen={callbacks.onClickOpenBasket}
+        fullPriceCart={totalPrice}
+        itemCount={itemCount}
+      />
+      <List list={list} onAddItem={callbacks.onAddItem} />
+      <BasketBlock active={activeModal} setActive={callbacks.onClickOpenBasket}>
+        <Basket
+          cartList={basketList}
+          cartOpen={callbacks.onClickOpenBasket}
+          deleteCartItem={callbacks.deleteItem}
+          fullPriceCart={totalPrice}
+          activeModal={activeModal}
+        />
+      </BasketBlock>
     </PageLayout>
   );
 }
