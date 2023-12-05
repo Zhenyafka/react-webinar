@@ -1,32 +1,26 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import {priceFormat} from "../../utils";
 import './style.css';
 
 function Item(props) {
-  const callbacks = {
-    onAddOrOnDeleteItem: (e) => {
-      e.stopPropagation();
-      props.onItemAction(props.item.code, props.item.title, props.item.price);
-    },
-  };
-
   return (
-    <div className="Item">
-      <div className="Item-code">{props.item.code}</div>
-      <div className="Item-title">{props.item.title}</div>
-      <div className="Item-price">
-        <p>{props.item.price} ₽</p>
+    <div className='Item'>
+      <div className='Item-code'>{props.item.code}</div>
+      <div className='Item-title'>
+        {props.item.title}
       </div>
-      {props.activeModal ? (
+      <div className="Item-price">
+        {priceFormat(props.item.price)}
+      </div>
+      {props.isCart && (
         <div className="Item-count">
-          <h2 className="Item-count2">{props.item.count} шт.</h2>
+          {props.item.count} шт.
         </div>
-      ) : (
-        ""
       )}
-      <div className="Item-actions">
-        <button onClick={callbacks.onAddOrOnDeleteItem}>
-          {props.buttonText}
+      <div className='Item-actions'>
+        <button onClick={() => props.isCart ? props.cartAction(props.item.code) : props.cartAction(props.item)}>
+          {props.isCart ? 'Удалить' : 'Добавить'}
         </button>
       </div>
     </div>
@@ -37,14 +31,23 @@ Item.propTypes = {
   item: PropTypes.shape({
     code: PropTypes.number,
     title: PropTypes.string,
+    selected: PropTypes.bool,
     count: PropTypes.number,
-    price: PropTypes.number,
+    price: PropTypes.number
   }).isRequired,
-  onAddCart: PropTypes.func,
+  onDelete: PropTypes.func,
+  onSelect: PropTypes.func,
+  cartAction: PropTypes.func,
+  isCart: PropTypes.bool
 };
 
 Item.defaultProps = {
-  onAddItem: () => {},
-};
+  onDelete: () => {
+  },
+  onSelect: () => {
+  },
+  cartAction: () => {},
+  isCart: false
+}
 
 export default React.memo(Item);

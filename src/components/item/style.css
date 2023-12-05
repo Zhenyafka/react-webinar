@@ -1,9 +1,12 @@
 .Item {
   display: flex;
   justify-content: flex-start;
-  align-items: center;
-
   transition: background-color 1s;
+}
+
+.Item_selected {
+  background: #75aaf1;
+  color: #fff;
 }
 
 .Item-code {
@@ -16,17 +19,11 @@
 }
 
 .Item-price {
-  margin-right: 24px;
-  white-space: nowrap;
+  padding: 20px 10px;
+}
 
-}
 .Item-count {
-  margin-left: 62px;
-  margin-right: 24px;
-}
-.Item-count2 {
-  font-size: 18px;
-  font-weight: 400;
+  padding: 20px 10px;
   white-space: nowrap;
 }
 

@@ -51,3 +51,21 @@ export function generateCode2() {
   return generateCode2.value ? ++generateCode2.value : generateCode2.value = 1;
 }
 
+export function priceFormat(price) {
+  return price.toLocaleString('ru', {
+    style: 'currency',
+    currency: 'rub',
+    minimumFractionDigits: 0
+  })
+}
+
+export function disableScroll() {
+  const paddingRight = window.innerWidth - document.body.offsetWidth + 'px';
+  document.body.style.paddingRight = paddingRight;
+  document.body.classList.add('disable-scroll');
+}
+
+export function enableScroll() {
+  document.body.style.paddingRight = 0;
+  document.body.classList.remove('disable-scroll');
+}

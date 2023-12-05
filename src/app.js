@@ -1,62 +1,57 @@
-import React, {useCallback} from 'react';
+import React, { useCallback, useEffect, useState } from "react";
 import List from "./components/list";
 import Controls from "./components/controls";
 import Head from "./components/head";
 import PageLayout from "./components/page-layout";
-import Basket from "./components/basket";
-import BasketInfo from "./components/basket-info";
-import BasketBlock from "./components/basket-block";
+import Modal from "./components/modal";
+import Cart from "./components/cart";
+import { disableScroll, enableScroll } from "./utils";
 
 /**
  * Приложение
  * @param store {Store} Хранилище состояния приложения
  * @returns {React.ReactElement}
  */
-function App({store}) {
-
+function App({ store }) {
+  const [modal, setModal] = useState(false);
   const list = store.getState().list;
-  const basketList = store.getState().basketList;
-  const totalPrice = store.getState().totalPrice;
-  const itemCount = store.getState().countCart;
-  const activeModal = store.getState().activeModal;
+  const cart = store.getState().cart;
+  const cartInfo = store.getCartInfo();
+
+  useEffect(() => {
+    if(modal) disableScroll();
+    else enableScroll();
+  }, [modal])
+
   const callbacks = {
-    onAddItemCart: useCallback(
-      (code, title, price) => {
-        store.onAddItem(code, title, price);
+    addToCart: useCallback(
+      (item) => {
+        store.addToCart(item);
       },
-      [store, store.getState().basketList]
+      [store]
     ),
-    onClickOpenBasket: useCallback(() => {
-      store.clickOpenBasket();
-    }, [store]),
-    deleteBasketItem: useCallback(
+    removeFromCart: useCallback(
       (code) => {
-        store.onDeleteItem(code);
+        store.removeFromCart(code);
       },
       [store]
     ),
   };
 
-
   return (
     <PageLayout>
-      <Head title="Магазин" />
-      <BasketInfo
-        cartList={basketList}
-        basketIsOpen={callbacks.onClickOpenBasket}
-        fullPriceCart={totalPrice}
-        itemCount={itemCount}
-      />
-      <List list={list} onAddItem={callbacks.onAddItem} />
-      <BasketBlock active={activeModal} setActive={callbacks.onClickOpenBasket}>
-        <Basket
-          cartList={basketList}
-          cartOpen={callbacks.onClickOpenBasket}
-          deleteCartItem={callbacks.deleteItem}
-          fullPriceCart={totalPrice}
-          activeModal={activeModal}
-        />
-      </BasketBlock>
+      <Head title="Приложение на чистом JS" />
+      {modal && (
+        <Modal visible={modal} setVisible={setModal}>
+          <Cart
+            cartList={cart}
+            cartAction={callbacks.removeFromCart}
+            setModal={setModal}
+          />
+        </Modal>
+      )}
+      <Controls setModal={setModal} cartInfo={cartInfo} />
+      <List list={list} cartAction={callbacks.addToCart} />
     </PageLayout>
   );
 }
