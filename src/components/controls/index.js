@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import './style.css';
 import { plural, priceFormat } from "../../utils";
 
-function Controls({setModal, cartInfo}) {
 
+function Controls({setModal, cartInfo}) {
   console.log(cartInfo);
   return (
     <div className='Controls'>

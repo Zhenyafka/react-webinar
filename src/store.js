@@ -84,8 +84,9 @@ class Store {
     })
   }
 
+
   getCartInfo() {
-    const cartInfo = {items_count: this.state.cart.length, total_price: this.state.cart.reduce((price, item) => price += item.price, 0)}
+    const cartInfo = {items_count: this.state.cart.length, total_price: this.state.cart.reduce((price, item) => price += item.price * item.count, 0)}
     return cartInfo;
   }
 
